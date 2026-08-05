@@ -1,0 +1,7 @@
+.git
+.claude
+*.md
+.DS_Store
+Dockerfile
+.dockerignore
+terraform
