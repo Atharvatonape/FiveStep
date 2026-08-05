@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    name: Build & test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Run smoke tests
+        run: bash test/smoke.sh
+
+      - name: Build Docker image
+        run: docker build -t fivestep:ci .
+
+      - name: Verify container serves the app
+        run: |
+          docker run -d --name fivestep -p 8080:8080 fivestep:ci
+          sleep 3
+          curl -fsS http://localhost:8080/healthz
+          curl -fsS http://localhost:8080/ | grep -q "FiveStep"
+          docker rm -f fivestep
