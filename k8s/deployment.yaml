@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fivestep
+  labels:
+    app: fivestep
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fivestep
+  template:
+    metadata:
+      labels:
+        app: fivestep
+    spec:
+      containers:
+        - name: web
+          image: 024001640841.dkr.ecr.us-east-1.amazonaws.com/fivestep:v2
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
