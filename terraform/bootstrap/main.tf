@@ -8,14 +8,33 @@ terraform {
   }
 }
 
-provider "aws" {
-  region  = "us-east-1"
-  profile = "fivestep-personal"
+variable "aws_profile" {
+  type    = string
+  default = "default"
 }
 
-# S3 bucket for Terraform remote state
+variable "region" {
+  type    = string
+  default = "us-east-1"
+}
+
+variable "state_bucket" {
+  description = "Globally-unique S3 bucket name for Terraform remote state."
+  type        = string
+}
+
+variable "lock_table" {
+  type    = string
+  default = "fivestep-tflock"
+}
+
+provider "aws" {
+  region  = var.region
+  profile = var.aws_profile
+}
+
 resource "aws_s3_bucket" "tfstate" {
-  bucket = "fivestep-tfstate-024001640841"
+  bucket = var.state_bucket
 }
 
 resource "aws_s3_bucket_versioning" "tfstate" {
@@ -42,9 +61,8 @@ resource "aws_s3_bucket_public_access_block" "tfstate" {
   restrict_public_buckets = true
 }
 
-# DynamoDB table for state locking
 resource "aws_dynamodb_table" "tflock" {
-  name         = "fivestep-tflock"
+  name         = var.lock_table
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
 

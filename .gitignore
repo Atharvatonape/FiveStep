@@ -8,5 +8,11 @@ terraform/bootstrap/terraform.tfstate.backup
 *.tfvars
 tfplan
 
+# Local secrets / config (each user creates their own)
+.env
+
+# Personal interview prep notes (keep local)
+INTERVIEW.md
+
 # OS
 .DS_Store

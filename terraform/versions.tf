@@ -1,13 +1,12 @@
 terraform {
   required_version = ">= 1.5.0"
 
+  # Partial backend config: bucket/region/profile are supplied at init time
+  # via -backend-config flags (see scripts/up.sh), so this repo isn't tied
+  # to one person's AWS account.
   backend "s3" {
-    bucket         = "fivestep-tfstate-024001640841"
-    key            = "eks/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "fivestep-tflock"
-    encrypt        = true
-    profile        = "fivestep-personal"
+    key     = "eks/terraform.tfstate"
+    encrypt = true
   }
 
   required_providers {
@@ -34,7 +33,6 @@ provider "aws" {
     tags = {
       Project   = "fivestep"
       ManagedBy = "terraform"
-      Owner     = "fivestep-personal"
     }
   }
 }
